@@ -16,6 +16,49 @@ String::String () : string(), length(0) {
 }
 
 
+String String::operator + (String addend) {
+    return String(*(this), addend);
+}
+
+bool String::operator < (String rightExpr) {
+    return length < rightExpr.size();
+}
+
+bool String::operator > (String rightExpr) {
+    return length > rightExpr.size();
+}
+
+bool String::operator == (String rightExpr) {
+    if (rightExpr.size() == length){
+        if (rightExpr.seek(*(this)) == 0) return true;
+    }
+    return false;
+}
+
+String& String::operator = (String rightExpr) {
+    initVector(rightExpr.toString());
+    getLength();
+    return *this;
+}
+
+std::istream& operator >> (std::istream& in, String& initString) {
+    char* buffer;
+    String temp = String();
+
+    char letter;
+    do {
+        letter = in.getc();
+        if (letter == '\n') break;
+    } while (true);
+    initString = temp;
+    return in;
+}
+
+std::ostream& operator << (std::ostream& out, const String& outString) {
+    out << outString.toStringVar;
+    return out;
+}
+
 void String::concatString(char* newString) {
     for (long i = 0; i < newString[i] != '\0'; i++) {
         this->string.push_back(newString[i]);
@@ -24,7 +67,6 @@ void String::concatString(char* newString) {
 }
 
 void String::concatString(String newString) {
-    //char* tempString = newString.toString();
     concatString(newString.toString());
 }
 
@@ -36,28 +78,30 @@ void String::concatStringIn(long index, char* newString) {
 }
 
 void String::concatStringIn(long index, String newString) {
-    concatStringIn(index, newString.toString());
+    return concatStringIn(index, newString.toString());
 }
 
-bool String::seek(char* subString) {
+long String::seek(char* subString) {
     bool isSought = false;
+    long temp = 0;
+    long tempPosition = length + 1;
 
-    for (auto item : string){
-        for (long i = 0; subString[i] != '\0'; i++ ){
-            if (!item == subString[i]){
-                isSought = false;
-                break;
-            }
+    for (int i = 0; i < string.size(); i++) {
+        if (string[i] != subString[temp]) {
+            isSought = false;
+            temp = 0;
+        } else {
+            tempPosition = !isSought ? i : tempPosition;
+            temp++;
             isSought = true;
+            if (subString[temp] == '\0') return tempPosition;
         }
-        if (isSought) break;
     }
-
-    return isSought;
+    return length + 1;
 }
 
-bool String::seek(String subString) {
-    seek(subString.toString());
+long String::seek(String subString) {
+    return seek(subString.toString());
 }
 
 String String::getSubstring(long begin, long end) {
@@ -76,6 +120,12 @@ char* String::toString() {
     stringBuilder();
     return toStringVar;
 }
+
+long String::size() {
+    return length;
+}
+
+
 
 void String::initVector(char* initString) {
    for (long i = 0; i < initString[i] != '\0'; i++) {
