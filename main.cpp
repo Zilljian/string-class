@@ -17,7 +17,6 @@ int main() {
     cout << newString2.seek("kek") << endl;
 
     cout << newString2 << endl;
-    cin >> string;
-    cout << endl;
-    cout << string;
+    cin >> newString;
+    cout << newString;
 }

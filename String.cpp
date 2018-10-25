@@ -3,16 +3,19 @@
 String::String (char* initString) : string(), length(0) {
     initVector(initString);
     getLength();
+    stringBuilder();
 }
 
 String::String (String firstString, String secondString) : string(), length(0) {
     initVector(firstString.toString());
     concatString(secondString);
     getLength();
+    stringBuilder();
 }
 
 String::String () : string(), length(0) {
     getLength();
+    stringBuilder();
 }
 
 
@@ -42,15 +45,16 @@ String& String::operator = (String rightExpr) {
 }
 
 std::istream& operator >> (std::istream& in, String& initString) {
-    char* buffer;
-    String temp = String();
-
-    char letter;
-    do {
-        letter = in.getc();
-        if (letter == '\n') break;
-    } while (true);
-    initString = temp;
+    char buffer;
+    in.get(buffer);
+    if (buffer != '\n') {
+        initString.string.erase(initString.string.begin(), initString.string.end());
+        initString.length = 0;
+        while (buffer != '\n') {
+            initString.concatString(&buffer);
+            in.get(buffer);
+        }
+    }
     return in;
 }
 
@@ -64,6 +68,7 @@ void String::concatString(char* newString) {
         this->string.push_back(newString[i]);
     }
     getLength();
+    this->stringBuilder();
 }
 
 void String::concatString(String newString) {
@@ -75,6 +80,7 @@ void String::concatStringIn(long index, char* newString) {
         this->string.insert(string.begin() + i + index, newString[i]);
     }
     getLength();
+    this->stringBuilder();
 }
 
 void String::concatStringIn(long index, String newString) {
@@ -124,7 +130,6 @@ char* String::toString() {
 long String::size() {
     return length;
 }
-
 
 
 void String::initVector(char* initString) {
